@@ -1355,6 +1355,16 @@ intel_hdmi_set_edid(struct drm_connector *connector, bool force)
 				    intel_gmbus_get_adapter(dev_priv,
 				    intel_hdmi->ddc_bus));
 
+		/* for injected EDIDs */
+		if (!edid && connector->override_edid) {
+			edid = kzalloc(connector->edid_blob_ptr->length,
+					GFP_KERNEL);
+			if (edid) {
+				memcpy(edid, connector->edid_blob_ptr->data,
+						connector->edid_blob_ptr->length);
+			}
+		}
+
 		intel_display_power_put(dev_priv, POWER_DOMAIN_GMBUS);
 	}
 
